@@ -6,7 +6,9 @@ This repository contains the message definitions used to interract with ZMK Stud
 
 This fork adds `proto/zmk/meteorite.proto` and wires it into `studio.proto` as subsystem tag `6`.
 The schema is used by the Meteorite40 editor to read and write Meteorite custom config through
-ZMK Studio RPC instead of a separate transport protocol.
+ZMK Studio RPC instead of a separate transport protocol. `ConfigState` also carries Meteorite
+rotary encoder slot metadata so the editor can render encoder binding positions without hard-coded
+layout sentinel rules.
 It also extends `core.GetDeviceInfoResponse` with a backward-compatible `capabilities` string list.
 Meteorite-enabled firmware reports `meteorite.config`, and the editor only calls the Meteorite
 subsystem when that capability is present.

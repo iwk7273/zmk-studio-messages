@@ -61,6 +61,7 @@ message ConfigState {
     ConfigValues saved = 5;
     ConfigValues defaults = 6;
     bool dirty = 7;
+    repeated EncoderSlot encoder_slots = 8;
 }
 
 message ConfigValues {
@@ -101,4 +102,23 @@ message ConfigFieldOption {
     string label = 2;
     sint32 display_value = 3;
     string display_label = 4;
+}
+
+message EncoderSlot {
+    uint32 position = 1;
+    EncoderSide side = 2;
+    EncoderDirection direction = 3;
+    string label = 4;
+    uint32 sensor_index = 5;
+    uint32 slot_offset = 6;
+}
+
+enum EncoderSide {
+    ENCODER_SIDE_LEFT = 0;
+    ENCODER_SIDE_RIGHT = 1;
+}
+
+enum EncoderDirection {
+    ENCODER_DIRECTION_CW = 0;
+    ENCODER_DIRECTION_CCW = 1;
 }
