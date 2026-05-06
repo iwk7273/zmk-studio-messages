@@ -1,0 +1,104 @@
+syntax = "proto3";
+
+package zmk.meteorite;
+
+message Request {
+    oneof request_type {
+        bool get_config_state = 1;
+        SetConfigRequest set_config = 2;
+        bool check_unsaved_changes = 3;
+        bool save_changes = 4;
+        bool discard_changes = 5;
+    }
+}
+
+message Response {
+    oneof response_type {
+        ConfigState get_config_state = 1;
+        SetConfigResponse set_config = 2;
+        bool check_unsaved_changes = 3;
+        SaveChangesResponse save_changes = 4;
+        bool discard_changes = 5;
+    }
+}
+
+message Notification {
+    oneof notification_type {
+        ConfigState config_state_changed = 1;
+        bool unsaved_changes_status_changed = 2;
+    }
+}
+
+message SetConfigRequest {
+    ConfigValues config = 1;
+}
+
+enum SetConfigResponse {
+    SET_CONFIG_RESP_OK = 0;
+    SET_CONFIG_RESP_ERR_INVALID_VALUE = 1;
+    SET_CONFIG_RESP_ERR_GENERIC = 2;
+}
+
+message SaveChangesResponse {
+    oneof result {
+        bool ok = 1;
+        SaveChangesErrorCode err = 2;
+    }
+}
+
+enum SaveChangesErrorCode {
+    SAVE_CHANGES_ERR_OK = 0;
+    SAVE_CHANGES_ERR_GENERIC = 1;
+    SAVE_CHANGES_ERR_NOT_SUPPORTED = 2;
+    SAVE_CHANGES_ERR_NO_SPACE = 3;
+}
+
+message ConfigState {
+    uint32 schema_version = 1;
+    string firmware_feature_version = 2;
+    repeated ConfigField fields = 3;
+    ConfigValues current = 4;
+    ConfigValues saved = 5;
+    ConfigValues defaults = 6;
+    bool dirty = 7;
+}
+
+message ConfigValues {
+    uint32 cpi_idx = 1;
+    uint32 scroll_div = 2;
+    uint32 rotation_idx = 3;
+    uint32 scroll_h_rev = 4;
+    uint32 scroll_v_rev = 5;
+    uint32 scaling_mode = 6;
+    uint32 scroll_scaling_mode = 7;
+    uint32 scroll_layer_1 = 8;
+    uint32 scroll_layer_2 = 9;
+    uint32 os_mode = 10;
+}
+
+message ConfigField {
+    string id = 1;
+    string label = 2;
+    ConfigFieldKind kind = 3;
+    string unit = 4;
+    sint32 min = 5;
+    sint32 max = 6;
+    sint32 step = 7;
+    bool read_only = 8;
+    string fixed_reason = 9;
+    repeated ConfigFieldOption options = 10;
+}
+
+enum ConfigFieldKind {
+    CONFIG_FIELD_KIND_RANGE = 0;
+    CONFIG_FIELD_KIND_TOGGLE = 1;
+    CONFIG_FIELD_KIND_ENUM = 2;
+    CONFIG_FIELD_KIND_INDEXED = 3;
+}
+
+message ConfigFieldOption {
+    sint32 value = 1;
+    string label = 2;
+    sint32 display_value = 3;
+    string display_label = 4;
+}

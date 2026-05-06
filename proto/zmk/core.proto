@@ -27,6 +27,7 @@ message Response {
 message GetDeviceInfoResponse {
     string name = 1;
     bytes serial_number = 2;
+    repeated string capabilities = 3;
 }
 
 message Notification {
