@@ -1,0 +1,3 @@
+zmk.combos.Combo.combo_id max_size:@CONFIG_ZMK_COMBO_SETTINGS_ID_MAX_LEN@
+zmk.combos.Combo.key_positions max_count:@CONFIG_ZMK_COMBO_SETTINGS_MAX_KEYS_PER_COMBO@
+zmk.combos.Combo.layers max_count:@CONFIG_ZMK_COMBO_SETTINGS_MAX_LAYERS@

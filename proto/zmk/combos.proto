@@ -1,0 +1,99 @@
+syntax = "proto3";
+
+package zmk.combos;
+
+import "keymap.proto";
+
+message Request {
+    oneof request_type {
+        bool get_combo_state = 1;
+        SetComboRequest set_combo = 2;
+        bool check_unsaved_changes = 3;
+        bool save_changes = 4;
+        bool discard_changes = 5;
+    }
+}
+
+message Response {
+    oneof response_type {
+        ComboState get_combo_state = 1;
+        SetComboResponse set_combo = 2;
+        bool check_unsaved_changes = 3;
+        SaveChangesResponse save_changes = 4;
+        bool discard_changes = 5;
+    }
+}
+
+message Notification {
+    oneof notification_type {
+        ComboState combo_state_changed = 1;
+        bool unsaved_changes_status_changed = 2;
+    }
+}
+
+message ComboState {
+    uint32 schema_version = 1;
+    uint32 max_combos = 2;
+    uint32 max_keys_per_combo = 3;
+    repeated Combo combos = 4;
+    bool dirty = 5;
+}
+
+message Combo {
+    string combo_id = 1;
+    uint32 slot_index = 2;
+    ComboSource source = 3;
+    bool enabled = 4;
+    zmk.keymap.BehaviorBinding binding = 5;
+    repeated uint32 key_positions = 6;
+    // Empty list means the combo is active on all layers.
+    repeated uint32 layers = 7;
+    uint32 timeout_ms = 8;
+    sint32 require_prior_idle_ms = 9;
+    bool slow_release = 10;
+    bool dirty = 11;
+}
+
+enum ComboSource {
+    COMBO_SOURCE_STOCK = 0;
+    COMBO_SOURCE_USER = 1;
+}
+
+message SetComboRequest {
+    Combo combo = 1;
+}
+
+message SetComboResponse {
+    oneof result {
+        SetComboOk ok = 1;
+        SetComboErrorCode err = 2;
+    }
+}
+
+message SetComboOk {
+    Combo combo = 1;
+    bool dirty = 2;
+}
+
+enum SetComboErrorCode {
+    SET_COMBO_ERR_OK = 0;
+    SET_COMBO_ERR_GENERIC = 1;
+    SET_COMBO_ERR_INVALID_SLOT = 2;
+    SET_COMBO_ERR_INVALID_BEHAVIOR = 3;
+    SET_COMBO_ERR_INVALID_PARAMETERS = 4;
+    SET_COMBO_ERR_BUSY = 5;
+}
+
+message SaveChangesResponse {
+    oneof result {
+        bool ok = 1;
+        SaveChangesErrorCode err = 2;
+    }
+}
+
+enum SaveChangesErrorCode {
+    SAVE_CHANGES_ERR_OK = 0;
+    SAVE_CHANGES_ERR_GENERIC = 1;
+    SAVE_CHANGES_ERR_NOT_SUPPORTED = 2;
+    SAVE_CHANGES_ERR_NO_SPACE = 3;
+}
