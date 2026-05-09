@@ -16,6 +16,7 @@ message Request {
         RemoveLayerRequest remove_layer = 10;
         RestoreLayerRequest restore_layer = 11;
         SetLayerPropsRequest set_layer_props = 12;
+        SetLayerSensorBindingRequest set_layer_sensor_binding = 13;
     }
 }
 
@@ -33,6 +34,7 @@ message Response {
         RemoveLayerResponse remove_layer = 10;
         RestoreLayerResponse restore_layer = 11;
         SetLayerPropsResponse set_layer_props = 12;
+        SetLayerSensorBindingResponse set_layer_sensor_binding = 13;
     }
 }
 
@@ -138,6 +140,13 @@ enum SetLayerPropsResponse {
     SET_LAYER_PROPS_RESP_ERR_INVALID_ID = 2;
 }
 
+enum SetLayerSensorBindingResponse {
+    SET_LAYER_SENSOR_BINDING_RESP_OK = 0;
+    SET_LAYER_SENSOR_BINDING_RESP_INVALID_LOCATION = 1;
+    SET_LAYER_SENSOR_BINDING_RESP_INVALID_BEHAVIOR = 2;
+    SET_LAYER_SENSOR_BINDING_RESP_INVALID_PARAMETERS = 3;
+}
+
 enum SetActivePhysicalLayoutErrorCode {
     SET_ACTIVE_PHYSICAL_LAYOUT_ERR_OK = 0;
     SET_ACTIVE_PHYSICAL_LAYOUT_ERR_GENERIC = 1;
@@ -173,6 +182,12 @@ message SetLayerPropsRequest {
     string name = 2;
 }
 
+message SetLayerSensorBindingRequest {
+    uint32 layer_id = 1;
+    uint32 sensor_index = 2;
+    BehaviorBinding binding = 3;
+}
+
 message Keymap {
     repeated Layer layers = 1;
     uint32 available_layers = 2;
@@ -183,6 +198,7 @@ message Layer {
     uint32 id = 1;
     string name = 2;
     repeated BehaviorBinding bindings = 3;
+    repeated BehaviorBinding sensor_bindings = 4;
 }
 
 message BehaviorBinding {
