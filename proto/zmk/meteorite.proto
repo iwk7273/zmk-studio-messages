@@ -66,6 +66,9 @@ message ConfigState {
     ConfigValues saved = 5;
     ConfigValues defaults = 6;
     bool dirty = 7;
+    // Build version of the flashed firmware artifact (zmk-config-meteorite40
+    // release version). Empty when the firmware predates this field.
+    string firmware_build_version = 9;
 }
 
 message ConfigValues {
