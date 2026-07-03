@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package zmk.meteorite;
 
+import "keymap.proto";
+
 message Request {
     oneof request_type {
         bool get_config_state = 1;
@@ -74,9 +76,60 @@ message ConfigValues {
     uint32 scroll_v_rev = 5;
     uint32 scaling_mode = 6;
     uint32 scroll_scaling_mode = 7;
+    // Frozen for backward compatibility. No longer used for routing; superseded
+    // by ball_config.layer_profiles (migrated to a SCROLL profile). Always
+    // reported at defaults.
     uint32 scroll_layer_1 = 8;
     uint32 scroll_layer_2 = 9;
     uint32 os_mode = 10;
+    // Optional. Absence (no submessage presence) means "preserve existing ball
+    // state", so an older client that does not know about ball profiles can
+    // still set the scalar values without clobbering ball_config.
+    BallConfig ball_config = 11;
+}
+
+// Ball Profile assigned per keymap layer.
+// APP is a reserved value (hidden in the v1 UI).
+enum BallProfile {
+    BALL_PROFILE_OFF = 0;
+    BALL_PROFILE_SCROLL = 1;
+    BALL_PROFILE_BROWSER = 2;
+    BALL_PROFILE_DESKTOP = 3;
+    BALL_PROFILE_WINDOW = 4;
+    BALL_PROFILE_APP = 5;
+    BALL_PROFILE_USER1 = 6;
+}
+
+// Shared accumulation threshold for all action profiles. Higher = less
+// sensitive (needs a larger flick before one action fires).
+//
+// The enum integer values are in sensitivity order (VERY_LIGHT most sensitive
+// .. VERY_HEAVY least), so a slider can map its position directly to the value.
+// Any future level must be appended at the end (>= 5) to keep saved configs
+// stable; do not renumber these.
+enum BallSensitivity {
+    BALL_SENSITIVITY_VERY_LIGHT = 0;  // most sensitive (smallest flick)
+    BALL_SENSITIVITY_LIGHT = 1;
+    BALL_SENSITIVITY_NORMAL = 2;
+    BALL_SENSITIVITY_HEAVY = 3;
+    BALL_SENSITIVITY_VERY_HEAVY = 4;  // least sensitive (largest flick)
+}
+
+enum BallDirection {
+    BALL_DIRECTION_LEFT = 0;
+    BALL_DIRECTION_RIGHT = 1;
+    BALL_DIRECTION_UP = 2;
+    BALL_DIRECTION_DOWN = 3;
+}
+
+message BallConfig {
+    // Indexed by keymap layer index. Fixed max_count 16 (see meteorite.options).
+    repeated BallProfile layer_profiles = 1;
+    // Shared threshold for all action profiles. Firmware always populates this
+    // explicitly (do not rely on the proto3 zero-default).
+    BallSensitivity sensitivity = 2;
+    // Indexed by BallDirection (LEFT, RIGHT, UP, DOWN). Fixed max_count 4.
+    repeated zmk.keymap.BehaviorBinding user1_bindings = 3;
 }
 
 message ConfigField {
