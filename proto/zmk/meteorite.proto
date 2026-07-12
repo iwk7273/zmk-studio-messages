@@ -103,6 +103,24 @@ message TimingConfig {
     uint32 layer_tap_tapping_term_ms = 2;
     uint32 idle_timeout_s = 3;
     uint32 idle_sleep_timeout_s = 4;
+    // Optional profile messages preserve these settings when an older client,
+    // which only knows fields 1-4, updates TimingConfig.
+    HoldTapConfig mod_tap = 5;
+    HoldTapConfig layer_tap = 6;
+}
+
+enum HoldTapFlavor {
+    HOLD_TAP_FLAVOR_HOLD_PREFERRED = 0;
+    HOLD_TAP_FLAVOR_BALANCED = 1;
+    HOLD_TAP_FLAVOR_TAP_PREFERRED = 2;
+    HOLD_TAP_FLAVOR_TAP_UNLESS_INTERRUPTED = 3;
+}
+
+message HoldTapConfig {
+    HoldTapFlavor flavor = 1;
+    // 0 disables the corresponding timing feature.
+    uint32 quick_tap_ms = 2;
+    uint32 require_prior_idle_ms = 3;
 }
 
 // Ball Profile assigned per keymap layer.
