@@ -89,6 +89,38 @@ message ConfigValues {
     // state", so an older client that does not know about ball profiles can
     // still set the scalar values without clobbering ball_config.
     BallConfig ball_config = 11;
+    // Optional. Absence means "preserve existing timing state", so an older
+    // client can still update the original custom-config fields without
+    // resetting the user-selected tapping and power timings.
+    TimingConfig timing_config = 12;
+}
+
+// Keyboard behavior and power-management timings. All values are stored in
+// user-facing units: tapping terms in milliseconds and power timeouts in
+// seconds. A timeout value of 0 disables that automatic transition.
+message TimingConfig {
+    uint32 mod_tap_tapping_term_ms = 1;
+    uint32 layer_tap_tapping_term_ms = 2;
+    uint32 idle_timeout_s = 3;
+    uint32 idle_sleep_timeout_s = 4;
+    // Optional profile messages preserve these settings when an older client,
+    // which only knows fields 1-4, updates TimingConfig.
+    HoldTapConfig mod_tap = 5;
+    HoldTapConfig layer_tap = 6;
+}
+
+enum HoldTapFlavor {
+    HOLD_TAP_FLAVOR_HOLD_PREFERRED = 0;
+    HOLD_TAP_FLAVOR_BALANCED = 1;
+    HOLD_TAP_FLAVOR_TAP_PREFERRED = 2;
+    HOLD_TAP_FLAVOR_TAP_UNLESS_INTERRUPTED = 3;
+}
+
+message HoldTapConfig {
+    HoldTapFlavor flavor = 1;
+    // 0 disables the corresponding timing feature.
+    uint32 quick_tap_ms = 2;
+    uint32 require_prior_idle_ms = 3;
 }
 
 // Ball Profile assigned per keymap layer.
