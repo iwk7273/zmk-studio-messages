@@ -71,6 +71,17 @@ message ConfigState {
     string firmware_build_version = 9;
 }
 
+enum PointerProfile {
+    POINTER_PROFILE_STANDARD = 0;
+    POINTER_PROFILE_STABLE = 1;
+    POINTER_PROFILE_RESPONSIVE = 2;
+    POINTER_PROFILE_WIDE = 3;
+}
+
+message PointerConfig {
+    PointerProfile profile = 1;
+}
+
 message ConfigValues {
     uint32 cpi_idx = 1;
     uint32 scroll_div = 2;
@@ -93,6 +104,10 @@ message ConfigValues {
     // client can still update the original custom-config fields without
     // resetting the user-selected tapping and power timings.
     TimingConfig timing_config = 12;
+    // Optional. Absence means "preserve the existing pointer profile", so an
+    // older client can update the original custom-config fields without
+    // resetting the user-selected pointer profile.
+    PointerConfig pointer_config = 13;
 }
 
 // Keyboard behavior and power-management timings. All values are stored in
