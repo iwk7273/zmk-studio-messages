@@ -75,11 +75,24 @@ enum PointerProfile {
     POINTER_PROFILE_STANDARD = 0;
     POINTER_PROFILE_STABLE = 1;
     POINTER_PROFILE_RESPONSIVE = 2;
-    POINTER_PROFILE_WIDE = 3;
+    POINTER_PROFILE_CUSTOM = 3;
+}
+
+// User-selected gains for the fixed 0 / 30 / 90 / 200 mm/s custom curve.
+// Values are integer percentages (40 = 0.4x). The firmware owns the allowed
+// choices and publishes them through ConfigField metadata.
+message PointerCurveConfig {
+    uint32 start_gain_percent = 1;
+    uint32 precision_gain_percent = 2;
+    uint32 fast_gain_percent = 3;
+    uint32 flick_gain_percent = 4;
 }
 
 message PointerConfig {
     PointerProfile profile = 1;
+    // Optional. Absence preserves the existing custom curve so older clients
+    // can update pointer scaling without resetting user-selected gains.
+    PointerCurveConfig custom_curve = 2;
 }
 
 message ConfigValues {
