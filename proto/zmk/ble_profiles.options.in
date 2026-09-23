@@ -1,0 +1,4 @@
+zmk.ble_profiles.Profile.name max_size:17
+zmk.ble_profiles.Profile.address max_size:30
+# Decode overlong names so the handler can return MUTATION_INVALID_NAME.
+zmk.ble_profiles.SetNameRequest.name_utf8 max_size:64
