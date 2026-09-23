@@ -13,8 +13,15 @@ It also extends `core.GetDeviceInfoResponse` with a backward-compatible `capabil
 Meteorite-enabled firmware reports `meteorite.config`, and the editor only calls the Meteorite
 subsystem when that capability is present.
 
+The fork also includes settings-backed `combos` and `macros` subsystems at provisional tags `7`
+and `8`. Firmware advertises them independently as `combos.config` and `macros.config`; clients
+must capability-gate both subsystems. Macro definitions use fixed behavior slots. Names, tap timing,
+and compact key-action sequences (including packed ASCII text steps) live in a shared settings-backed
+byte pool. `get_macro_state` returns slot summaries without step bodies; `get_macro` loads one slot.
+
 Keep `upstream` pointed at `zmkfirmware/zmk-studio-messages` and rebase this fork when upstream
-adds new Studio message tags. Do not reuse tag `6` for another local subsystem.
+adds new Studio message tags. Do not reuse provisional tags `6` through `8` for another local
+subsystem.
 
 ## TODO
 

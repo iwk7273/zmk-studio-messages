@@ -9,6 +9,7 @@ import "behaviors.proto";
 import "keymap.proto";
 import "meteorite.proto";
 import "combos.proto";
+import "macros.proto";
 
 message Request {
     uint32 request_id = 1;
@@ -20,6 +21,8 @@ message Request {
         zmk.meteorite.Request meteorite = 6;
         // Fork-local provisional tag. Resolve manually if upstream assigns combos elsewhere.
         zmk.combos.Request combos = 7;
+        // Fork-local provisional tag. Resolve manually if upstream assigns macros elsewhere.
+        zmk.macros.Request macros = 8;
     }
 }
 
@@ -40,6 +43,8 @@ message RequestResponse {
         zmk.meteorite.Response meteorite = 6;
         // Fork-local provisional tag. Resolve manually if upstream assigns combos elsewhere.
         zmk.combos.Response combos = 7;
+        // Fork-local provisional tag. Resolve manually if upstream assigns macros elsewhere.
+        zmk.macros.Response macros = 8;
     }
 }
 
@@ -50,5 +55,7 @@ message Notification {
         zmk.meteorite.Notification meteorite = 6;
         // Fork-local provisional tag. Resolve manually if upstream assigns combos elsewhere.
         zmk.combos.Notification combos = 7;
+        // Fork-local provisional tag. Resolve manually if upstream assigns macros elsewhere.
+        zmk.macros.Notification macros = 8;
     }
 }
