@@ -11,6 +11,9 @@ message Request {
         bool check_unsaved_changes = 3;
         bool save_changes = 4;
         bool discard_changes = 5;
+        GetMacroRequest get_macro = 6;
+        SetTapMsRequest set_tap_ms = 7;
+        ResetMacroRequest reset_macro = 8;
     }
 }
 
@@ -21,6 +24,9 @@ message Response {
         bool check_unsaved_changes = 3;
         SaveChangesResponse save_changes = 4;
         bool discard_changes = 5;
+        GetMacroResponse get_macro = 6;
+        SetTapMsResponse set_tap_ms = 7;
+        ResetMacroResponse reset_macro = 8;
     }
 }
 
@@ -37,6 +43,10 @@ message MacroState {
     uint32 max_steps_per_macro = 3;
     repeated Macro macros = 4;
     bool dirty = 5;
+    uint32 tap_ms = 6;
+    uint32 pool_bytes_total = 7;
+    uint32 pool_bytes_used = 8;
+    uint32 max_macro_bytes = 9;
 }
 
 message Macro {
@@ -46,12 +56,16 @@ message Macro {
     bool enabled = 4;
     repeated MacroStep steps = 5;
     bool dirty = 6;
+    bytes packed_keys = 7;
+    uint32 encoded_size = 8;
 }
 
 message MacroStep {
     MacroStepAction action = 1;
     zmk.keymap.BehaviorBinding binding = 2;
     uint32 wait_ms = 3;
+    uint32 packed_keys_offset = 4;
+    uint32 packed_keys_length = 5;
 }
 
 enum MacroStepAction {
@@ -60,6 +74,15 @@ enum MacroStepAction {
     MACRO_STEP_ACTION_PRESS = 2;
     MACRO_STEP_ACTION_RELEASE = 3;
     MACRO_STEP_ACTION_WAIT = 4;
+    MACRO_STEP_ACTION_TEXT = 5;
+}
+
+message GetMacroRequest {
+    uint32 slot_index = 1;
+}
+
+message GetMacroResponse {
+    Macro macro = 1;
 }
 
 message SetMacroRequest {
@@ -87,6 +110,27 @@ enum SetMacroErrorCode {
     SET_MACRO_ERR_INVALID_BEHAVIOR = 5;
     SET_MACRO_ERR_INVALID_PARAMETERS = 6;
     SET_MACRO_ERR_BUSY = 7;
+    SET_MACRO_ERR_NO_SPACE = 8;
+}
+
+message SetTapMsRequest {
+    uint32 tap_ms = 1;
+}
+
+message SetTapMsResponse {
+    uint32 tap_ms = 1;
+    bool dirty = 2;
+}
+
+message ResetMacroRequest {
+    uint32 slot_index = 1;
+}
+
+message ResetMacroResponse {
+    oneof result {
+        SetMacroOk ok = 1;
+        SetMacroErrorCode err = 2;
+    }
 }
 
 message SaveChangesResponse {
