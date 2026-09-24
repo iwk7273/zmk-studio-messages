@@ -1,0 +1,89 @@
+syntax = "proto3";
+
+package zmk.ble_profiles;
+
+message Request {
+    oneof request_type {
+        bool get_profiles = 1;
+        SetNameRequest set_name = 2;
+        SelectProfileRequest select_profile = 3;
+        UnpairProfileRequest unpair_profile = 4;
+        SetPreferredTransportRequest set_preferred_transport = 5;
+        SetHostLabelRequest set_host_label = 6;
+    }
+}
+
+message Response {
+    oneof response_type {
+        GetProfilesResponse get_profiles = 1;
+        MutationResponse set_name = 2;
+        MutationResponse select_profile = 3;
+        MutationResponse unpair_profile = 4;
+        MutationResponse set_preferred_transport = 5;
+        MutationResponse set_host_label = 6;
+    }
+}
+
+message Profile {
+    uint32 index = 1;
+    // Empty when no per-slot advertising name has been configured.
+    string name = 2;
+    string address = 3;
+    bool open = 4;
+    bool connected = 5;
+    bool active = 6;
+    // User-supplied host label. This is not the advertised keyboard name.
+    string host_label = 7;
+}
+
+enum Transport {
+    TRANSPORT_NONE = 0;
+    TRANSPORT_USB = 1;
+    TRANSPORT_BLE = 2;
+}
+
+message GetProfilesResponse {
+    uint32 slot_count = 1;
+    repeated Profile profiles = 2;
+    uint32 active_index = 3;
+    Transport preferred_transport = 4;
+    Transport selected_transport = 5;
+}
+
+message SetNameRequest {
+    uint32 index = 1;
+    // Bytes retain the exact input length, including any embedded NUL.
+    bytes name_utf8 = 2;
+}
+
+message SetHostLabelRequest {
+    uint32 index = 1;
+    // Empty clears the label; bytes retain the exact input length for validation.
+    bytes host_label_utf8 = 2;
+}
+
+message SelectProfileRequest {
+    uint32 index = 1;
+}
+
+message UnpairProfileRequest {
+    uint32 index = 1;
+}
+
+message SetPreferredTransportRequest {
+    Transport transport = 1;
+}
+
+enum MutationError {
+    MUTATION_OK = 0;
+    MUTATION_INVALID_INDEX = 1;
+    MUTATION_INVALID_NAME = 2;
+    MUTATION_INVALID_TRANSPORT = 3;
+    MUTATION_SAVE_FAILED = 4;
+    MUTATION_APPLY_FAILED = 5;
+    MUTATION_INVALID_HOST_LABEL = 6;
+}
+
+message MutationResponse {
+    MutationError error = 1;
+}
