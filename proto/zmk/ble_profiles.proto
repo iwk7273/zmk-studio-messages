@@ -9,6 +9,7 @@ message Request {
         SelectProfileRequest select_profile = 3;
         UnpairProfileRequest unpair_profile = 4;
         SetPreferredTransportRequest set_preferred_transport = 5;
+        SetHostLabelRequest set_host_label = 6;
     }
 }
 
@@ -19,6 +20,7 @@ message Response {
         MutationResponse select_profile = 3;
         MutationResponse unpair_profile = 4;
         MutationResponse set_preferred_transport = 5;
+        MutationResponse set_host_label = 6;
     }
 }
 
@@ -30,6 +32,8 @@ message Profile {
     bool open = 4;
     bool connected = 5;
     bool active = 6;
+    // User-supplied host label. This is not the advertised keyboard name.
+    string host_label = 7;
 }
 
 enum Transport {
@@ -52,6 +56,12 @@ message SetNameRequest {
     bytes name_utf8 = 2;
 }
 
+message SetHostLabelRequest {
+    uint32 index = 1;
+    // Empty clears the label; bytes retain the exact input length for validation.
+    bytes host_label_utf8 = 2;
+}
+
 message SelectProfileRequest {
     uint32 index = 1;
 }
@@ -71,6 +81,7 @@ enum MutationError {
     MUTATION_INVALID_TRANSPORT = 3;
     MUTATION_SAVE_FAILED = 4;
     MUTATION_APPLY_FAILED = 5;
+    MUTATION_INVALID_HOST_LABEL = 6;
 }
 
 message MutationResponse {
