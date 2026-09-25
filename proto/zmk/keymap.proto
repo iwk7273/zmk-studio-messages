@@ -18,6 +18,8 @@ message Request {
         SetLayerPropsRequest set_layer_props = 12;
         SetLayerSensorBindingRequest set_layer_sensor_binding = 13;
         SetLayerSensorBindingParamRequest set_layer_sensor_binding_param = 14;
+        bool get_fast_snapshot = 15;
+        GetFastLayersRequest get_fast_layers = 16;
     }
 }
 
@@ -37,6 +39,8 @@ message Response {
         SetLayerPropsResponse set_layer_props = 12;
         SetLayerSensorBindingResponse set_layer_sensor_binding = 13;
         SetLayerSensorBindingResponse set_layer_sensor_binding_param = 14;
+        FastSnapshot get_fast_snapshot = 15;
+        FastLayers get_fast_layers = 16;
     }
 }
 
@@ -207,6 +211,35 @@ message Keymap {
     repeated Layer layers = 1;
     uint32 available_layers = 2;
     uint32 max_layer_name_length = 3;
+}
+
+// Read-only, optional fast path. Existing edit/save RPCs remain authoritative.
+message FastSnapshot {
+    uint32 protocol_version = 1;
+    uint32 available_layers = 2;
+    uint32 max_layer_name_length = 3;
+    uint32 active_layout_index = 4;
+    bool unsaved_changes = 5;
+    uint32 layouts_hash_low = 6;
+    uint32 layouts_hash_high = 7;
+    uint32 behaviors_hash_low = 8;
+    uint32 behaviors_hash_high = 9;
+    repeated LayerFingerprint layers = 10;
+}
+
+message LayerFingerprint {
+    uint32 id = 1;
+    uint32 hash_low = 2;
+    uint32 hash_high = 3;
+}
+
+message GetFastLayersRequest {
+    uint32 start_index = 1;
+    uint32 count = 2;
+}
+
+message FastLayers {
+    repeated Layer layers = 1;
 }
 
 message Layer {
