@@ -6,6 +6,7 @@ message Request {
     oneof request_type {
         bool list_all_behaviors = 1;
         GetBehaviorDetailsRequest get_behavior_details = 2;
+        bool get_all_behavior_details = 3;
     }
 }
 
@@ -17,11 +18,16 @@ message Response {
     oneof response_type {
         ListAllBehaviorsResponse list_all_behaviors = 1;
         GetBehaviorDetailsResponse get_behavior_details = 2;
+        AllBehaviorDetails get_all_behavior_details = 3;
     }
 }
 
 message ListAllBehaviorsResponse {
     repeated uint32 behaviors = 1;
+}
+
+message AllBehaviorDetails {
+    repeated GetBehaviorDetailsResponse behaviors = 1;
 }
 
 message GetBehaviorDetailsResponse {
